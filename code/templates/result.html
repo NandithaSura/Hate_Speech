@@ -1,0 +1,99 @@
+<div style="max-width: 800px; margin: 40px auto; padding: 30px; background-color: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"></div>
+    <h1 style="text-align: center; color: #333; margin-bottom: 30px;">Analysis Result</h1>
+
+    <div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0;">
+        {% if is_audio %}
+            <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                <span style="background-color: #17a2b8; color: white; padding: 5px 10px; border-radius: 3px;">
+                    Audio Transcription Result
+                </span>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h2 style="color: #444; margin-bottom: 15px;">Transcribed Text:</h2>
+                <div style="background-color: #fff; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6;">
+                    {% for segment in analysis_results %}
+                        <p style="margin: 10px 0; padding: 5px; 
+                                 {% if segment.is_offensive %}
+                                 text-decoration: underline wavy red;
+                                 background-color: #fff8f8;
+                                 {% endif %}">
+                            {{ segment.text }}
+                            {% if segment.is_offensive %}
+                                <span style="display: inline-block; font-size: 12px; background-color: #ff4d4d; 
+                                           color: white; padding: 2px 6px; border-radius: 3px; margin-left: 10px;">
+                                    {{ segment.prediction }}
+                                </span>
+                            {% endif %}
+                        </p>
+                    {% endfor %}
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+                    <h3 style="color: #444; margin-bottom: 10px;">Overall Analysis:</h3>
+                    <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; font-weight: bold;
+                               {% if overall_result == 'Hate Speech' %}
+                                   background-color: #dc3545; color: white;
+                               {% elif overall_result == 'Offensive Language' %}
+                                   background-color: #ffc107; color: #333;
+                               {% else %}
+                                   background-color: #28a745; color: white;
+                               {% endif %}">
+                        {{ overall_result }}
+                    </span>
+                </div>
+            </div>
+        {% else %}
+            <div style="margin-bottom: 20px;">
+                <h2 style="color: #444; margin-bottom: 15px;">Text Analysis:</h2>
+                <div style="background-color: #fff; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6;">
+                    {% for line in original_text.splitlines() %}
+                        <p style="margin: 8px 0; padding: 5px;
+                                 {% if line in offensive_lines %}
+                                 text-decoration: underline wavy red;
+                                 background-color: #fff8f8;
+                                 {% endif %}">
+                            {{ line }}
+                        </p>
+                    {% endfor %}
+                </div>
+                
+                {% if original_lang != 'en' %}
+                    <div style="margin-top: 15px; color: #666;">
+                        Language: {{ original_lang }}
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if translated_text %}
+                <div style="margin-top: 20px;">
+                    <h2 style="color: #444; margin-bottom: 15px;">English Translation:</h2>
+                    <div style="background-color: #fff; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6;">
+                        {{ translated_text }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+                <h2 style="color: #444; margin-bottom: 10px;">Analysis Result:</h2>
+                <span style="display: inline-block; padding: 8px 16px; border-radius: 4px; font-weight: bold;
+                           {% if result == 'Hate Speech' %}
+                               background-color: #dc3545; color: white;
+                           {% elif result == 'Offensive Language' %}
+                               background-color: #ffc107; color: #333;
+                           {% else %}
+                               background-color: #28a745; color: white;
+                           {% endif %}">
+                    {{ result }}
+                </span>
+            </div>
+        {% endif %}
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/" style="display: inline-block; padding: 10px 20px; background-color: #6c757d; 
+                          color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s;">
+            Analyze Another
+        </a>
+    </div>
+</div>
